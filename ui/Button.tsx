@@ -1,20 +1,18 @@
-import clsx from 'clsx';
+import React from 'react';
 
-export default function Button({
-  kind = 'default',
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  kind?: 'default' | 'error';
-}) {
+type Props = {
+  children: React.ReactNode | string;
+  onClick?: Function;
+  className?: string;
+};
+
+export default function Button({ children, className, onClick }: Props) {
   return (
     <button
-      className={clsx('rounded-lg  px-3 py-1 text-sm font-medium', {
-        'bg-zinc-700 text-zinc-100 hover:bg-zinc-500 hover:text-white':
-          kind === 'default',
-        'bg-red-600 text-red-50 hover:bg-red-500 hover:text-white':
-          kind === 'error',
-      })}
-      {...props}
-    />
+      onClick={() => onClick && onClick()}
+      className={`rounded-full bg-black px-8 py-3 text-2xl font-bold text-white active:scale-95 ${className}`}
+    >
+      {children}
+    </button>
   );
 }

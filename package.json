@@ -14,7 +14,10 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@react-icons/all-files": "^4.1.0",
     "clsx": "1.2.1",
+    "ethers": "^5.7.2",
+    "framer-motion": "^8.5.2",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -30,7 +33,7 @@
     "eslint": "8.19.0",
     "eslint-config-next": "latest",
     "postcss": "^8.4.14",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.1.12",
     "tailwindcss": "^3.1.6",
     "typescript": "4.7.4"

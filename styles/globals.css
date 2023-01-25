@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: black;
+}
+
+.bg-gif-1 {
+  background-image: url('../public/gif7.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

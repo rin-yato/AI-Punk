@@ -5,6 +5,9 @@ const nextConfig = {
     // Required:
     appDir: true,
   },
+  images: {
+    domains: ['gateway.pinata.cloud'],
+  },
 };
 
 module.exports = nextConfig;
