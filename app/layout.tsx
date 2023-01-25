@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html>
       <head>
-        <title>NEXTJS 13</title>
+        <title>AI PUNK</title>
       </head>
       <body>
         <AnimatePresence>

@@ -340,6 +340,10 @@ export default function page() {
       await tx.wait();
       console.log(tx);
       setTransaction(tx);
+      setTimeout(() => {
+        setMinting(false);
+        setTransaction(null);
+      }, 3000);
       return tx;
     } catch (err) {
       console.log(err);
