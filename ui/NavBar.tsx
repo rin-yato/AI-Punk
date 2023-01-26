@@ -36,7 +36,7 @@ export default function NavBar({ connect, account, wrongNetwork }: Props) {
           </a>
         ) : (
           <Button onClick={() => connect()} className="hidden md:flex">
-            'Connect'
+            Connect
           </Button>
         )}
       </div>
