@@ -292,6 +292,12 @@ export default function CollectionPage() {
   const [wrongNetwork, setWrongNetwork] = useState(false);
 
   async function connect() {
+    if (!account && window.ethereum.networkVersion !== '5') {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }],
+      });
+    }
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -311,7 +317,7 @@ export default function CollectionPage() {
   }
 
   async function getCollection() {
-    if (window.ethereum.networkVersion !== '5') return [];
+    if (wrongNetwork) return [];
     const contract = await getContract();
     const collection = await contract.getCollection(account);
     return getCollectionURI(collection);
@@ -352,8 +358,10 @@ export default function CollectionPage() {
     window.ethereum.on('chainChanged', (chainId: string) => {
       if (chainId !== '0x5') {
         setWrongNetwork(true);
+        window.location.reload();
       } else {
         setWrongNetwork(false);
+        window.location.reload();
       }
     });
   }, []);
@@ -366,8 +374,7 @@ export default function CollectionPage() {
     }
   }, [account]);
 
-  
-  if (!account) {
+  if (!account && !wrongNetwork) {
     return (
       <div className="flex h-screen flex-col items-center justify-center">
         <Button className="bg-white text-black" onClick={connect}>
@@ -376,7 +383,7 @@ export default function CollectionPage() {
       </div>
     );
   }
-  
+
   if (collection === null) {
     return <Loading />;
   }
@@ -420,6 +427,11 @@ export default function CollectionPage() {
           </p>
         </a>
       ))}
+      {collection.length === 0 && (
+        <div className="fixed top-[50%] left-[50%] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+          <h2 className='text-white text-semibold text-2xl md:text-4xl'>You don't have any AI Punk NFT yet!</h2>
+        </div>
+      )}
     </div>
   );
 }

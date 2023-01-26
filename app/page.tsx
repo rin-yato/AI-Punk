@@ -302,7 +302,7 @@ export default function page() {
 
   async function connect() {
     if (!account && window.ethereum.networkVersion !== '5') {
-      window.ethereum.request({
+      await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x5' }],
       });
@@ -384,8 +384,10 @@ export default function page() {
     window.ethereum.on('chainChanged', (chainId: string) => {
       if (chainId !== '0x5') {
         setWrongNetwork(true);
+        window.location.reload();
       } else {
         setWrongNetwork(false);
+        window.location.reload();
       }
     });
   }, []);
