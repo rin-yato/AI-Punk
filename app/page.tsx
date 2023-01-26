@@ -298,8 +298,15 @@ export default function page() {
   const [account, setAccount] = useState('');
   const [minting, setMinting] = useState(false);
   const [transaction, setTransaction] = useState(null);
+  const [wrongNetwork, setWrongNetwork] = useState(false);
 
   async function connect() {
+    if (!account && window.ethereum.networkVersion !== '5') {
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }],
+      });
+    }
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -328,6 +335,12 @@ export default function page() {
     if (!account) {
       await connect();
     }
+    if (window.ethereum.networkVersion !== '5') {
+      window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }],
+      });
+    }
     const signer = new ethers.providers.Web3Provider(
       window.ethereum,
     ).getSigner();
@@ -340,10 +353,6 @@ export default function page() {
       await tx.wait();
       console.log(tx);
       setTransaction(tx);
-      setTimeout(() => {
-        setMinting(false);
-        setTransaction(null);
-      }, 3000);
       return tx;
     } catch (err) {
       console.log(err);
@@ -371,11 +380,15 @@ export default function page() {
       setAccount('');
       window.localStorage.removeItem('account');
     });
-  }, []);
 
-  function toggleMint() {
-    setMinting(!minting);
-  }
+    window.ethereum.on('chainChanged', (chainId: string) => {
+      if (chainId !== '0x5') {
+        setWrongNetwork(true);
+      } else {
+        setWrongNetwork(false);
+      }
+    });
+  }, []);
 
   return (
     <motion.main
@@ -386,11 +399,16 @@ export default function page() {
         <NavBar
           account={account}
           connect={connect}
-          getCollection={getCollection}
+          wrongNetwork={wrongNetwork}
         />
         <MintBox mint={mint} />
         {minting && (
-          <ResultModal tx={transaction} getCollection={getCollection} />
+          <ResultModal
+            tx={transaction}
+            getCollection={getCollection}
+            setMinting={setMinting}
+            setTransaction={setTransaction}
+          />
         )}
       </section>
 

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { IoMdArrowRoundBack } from '@react-icons/all-files/io/IoMdArrowRoundBack';
-import Link from 'next/link';
 import { BigNumber, ethers } from 'ethers';
 import Image from 'next/image';
+import Loading from './loading';
+import Button from '@/ui/Button';
 
 const ABI = [
   {
@@ -288,7 +288,8 @@ const contractAddress = '0x70c7BDc22f88f8CD054537f65e72Cb32D6260134';
 
 export default function CollectionPage() {
   const [account, setAccount] = useState('');
-  const [collection, setCollection] = useState<string[]>([]);
+  const [collection, setCollection] = useState<string[] | null>(null);
+  const [wrongNetwork, setWrongNetwork] = useState(false);
 
   async function connect() {
     try {
@@ -310,6 +311,7 @@ export default function CollectionPage() {
   }
 
   async function getCollection() {
+    if (window.ethereum.networkVersion !== '5') return [];
     const contract = await getContract();
     const collection = await contract.getCollection(account);
     return getCollectionURI(collection);
@@ -346,6 +348,14 @@ export default function CollectionPage() {
       setAccount('');
       window.localStorage.removeItem('account');
     });
+
+    window.ethereum.on('chainChanged', (chainId: string) => {
+      if (chainId !== '0x5') {
+        setWrongNetwork(true);
+      } else {
+        setWrongNetwork(false);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -356,47 +366,59 @@ export default function CollectionPage() {
     }
   }, [account]);
 
+  if (collection === null) {
+    return <Loading />;
+  }
+
+  if (!account) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center">
+        <Button className="bg-white text-black" onClick={connect}>
+          Connect
+        </Button>
+      </div>
+    );
+  }
+
+  if (wrongNetwork) {
+    return (
+      <div className="flex h-full w-full  items-center justify-center">
+        <h2 className="text-semibold mb-20 text-xl text-white">
+          Please connect to the Goerli network
+        </h2>
+      </div>
+    );
+  }
+
+  if (collection.length === 0) {
+    <div className="flex h-full w-full items-center justify-center">
+      <h2 className="text-semibold mb-20 text-xl text-white">
+        You don't have any AI PUNK NFT yet!
+      </h2>
+    </div>;
+  }
+
   return (
-    <div className="flex h-screen w-screen flex-col overflow-x-hidden">
-      <div className="m-8 flex items-center gap-8">
-        <Link
-          href={'/'}
-          className=" flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white active:scale-95"
+    <div className="mt-10 grid grid-cols-2 gap-4 px-6 md:gap-10 md:px-20 lg:grid-cols-5 xl:grid-cols-6">
+      {collection.map((uri, index) => (
+        <a
+          className="flex w-fit cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md bg-white p-1 md:p-4"
+          key={'uri' + index}
+          href={uri}
+          target="_blank"
         >
-          <IoMdArrowRoundBack className="text-4xl" />
-        </Link>
-        <h3 className="text-3xl font-semibold text-white underline">
-          My Collection
-        </h3>
-      </div>
-      <div className="mt-10 grid grid-cols-5 gap-10 px-20 xl:grid-cols-6">
-        {collection.map((uri, index) => (
-          <a
-            className="flex w-fit cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md bg-white p-4"
-            key={'uri' + index}
-            href={uri}
-            target="_blank"
-          >
-            <Image
-              src={uri}
-              width={200}
-              height={200}
-              alt="NFT"
-              className="rounded-lg"
-            />
-            <p className="w-full pt-3 pl-2 text-start text-lg font-semibold">
-              ID: {index}
-            </p>
-          </a>
-        ))}
-        {collection.length === 0 && (
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-2xl font-semibold text-white">
-              You don't have any NFTs yet
-            </p>
-          </div>
-        )}
-      </div>
+          <Image
+            src={uri}
+            width={200}
+            height={200}
+            alt="NFT"
+            className="rounded-lg"
+          />
+          <p className="w-full pt-3 pl-2 text-start text-lg font-semibold">
+            ID: {uri.split('/')[uri.split('/').length - 1].split('.')[0]}
+          </p>
+        </a>
+      ))}
     </div>
   );
 }

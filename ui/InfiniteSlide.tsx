@@ -23,12 +23,12 @@ export default function InfiniteSlide() {
   return (
     <motion.div initial="initial" animate="animate" exit="exit">
       <motion.div
-        className="m-5 flex w-fit gap-24 overflow-y-hidden"
+        className="m-5 flex w-fit gap-8 md:gap-24 overflow-y-hidden"
         variants={variants}
       >
         {images.map((image) => (
           <motion.div
-            className="relative !h-[315px] !w-[315px]"
+            className="relative h-[215px] w-[215px] md:!h-[315px] md:!w-[315px]"
             key={image}
             variants={Animation.slideUp}
             transition={{ duration: 1, ease: Transition.ease }}

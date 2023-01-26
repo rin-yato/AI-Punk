@@ -41,7 +41,7 @@ export default function ({
   return (
     <motion.div
       className={`absolute ${className}`}
-      transition={{ ease: Transition.ease, duration: 0.6 }}
+      transition={{ ease: Transition.ease, duration: 0.7 }}
       variants={variant}
     >
       <Image

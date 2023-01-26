@@ -10,6 +10,7 @@ export default function PreLoader() {
     animate: {
       transition: {
         staggerChildren: 0.2,
+        delayChildren: 0.3,
       },
     },
     exit: {
@@ -32,11 +33,33 @@ export default function PreLoader() {
         animate="animate"
         exit="exit"
       >
-        <PreLoaderImage src="/1.png" className="" top="27%" left="20%" />
-        <PreLoaderImage src="/1.png" className="" top="70%" left="40vw" />
-        <PreLoaderImage src="/1.png" className="right-[10%]" top="50vh" />
-        <PreLoaderImage src="/1.png" className="right-[55%]" top="50vh" />
-        <PreLoaderImage src="/1.png" className="right-[20%]" top="20%" />
+        <PreLoaderImage
+          src="/1.png"
+          className="w-[215px] lg:w-[445px]"
+          top="27%"
+          left="20%"
+        />
+        <PreLoaderImage
+          src="/525.png"
+          className="w-[215px] lg:w-[445px]"
+          top="70%"
+          left="40vw"
+        />
+        <PreLoaderImage
+          src="/129.png"
+          className="right-[10%] w-[215px] lg:w-[445px]"
+          top="50vh"
+        />
+        <PreLoaderImage
+          src="/166.png"
+          className="right-[55%] w-[215px] lg:w-[445px]"
+          top="50vh"
+        />
+        <PreLoaderImage
+          src="/448.png"
+          className="right-[20%] w-[215px] lg:w-[445px]"
+          top="30vh"
+        />
       </motion.div>
     </motion.div>
   );
