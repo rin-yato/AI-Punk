@@ -366,18 +366,19 @@ export default function CollectionPage() {
     }
   }, [account]);
 
-  if (collection === null) {
-    return <Loading />;
-  }
-
+  
   if (!account) {
     return (
       <div className="flex h-screen flex-col items-center justify-center">
         <Button className="bg-white text-black" onClick={connect}>
-          Connect
+          Connect MetaMask
         </Button>
       </div>
     );
+  }
+  
+  if (collection === null) {
+    return <Loading />;
   }
 
   if (wrongNetwork) {
