@@ -18,7 +18,7 @@ export default function MintBox({ mint }: Props) {
       </h3>
       <Button
         onClick={mint}
-        className="mt-8 w-full bg-white py-4 md:py-6 text-2xl font-extrabold text-black md:text-4xl"
+        className="mt-8 w-full !bg-white py-4 md:py-6 text-2xl font-extrabold !text-black md:text-4xl"
       >
         MINT
       </Button>

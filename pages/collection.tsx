@@ -1,10 +1,9 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import Image from 'next/image';
-import Loading from './loading';
 import Button from '@/ui/Button';
+import Loading from '@/ui/loading';
+import CollectionLayout from 'layouts/collectionLayout';
 
 const ABI = [
   {
@@ -376,62 +375,76 @@ export default function CollectionPage() {
 
   if (!account && !wrongNetwork) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center">
-        <Button className="bg-white text-black" onClick={connect}>
-          Connect MetaMask
-        </Button>
-      </div>
+      <CollectionLayout>
+        <div className="flex h-screen flex-col items-center justify-center">
+          <Button className="bg-white text-black" onClick={connect}>
+            Connect MetaMask
+          </Button>
+        </div>
+      </CollectionLayout>
     );
   }
 
   if (collection === null) {
-    return <Loading />;
+    return (
+      <CollectionLayout>
+        <Loading />
+      </CollectionLayout>
+    );
   }
 
   if (wrongNetwork) {
     return (
-      <div className="flex h-full w-full  items-center justify-center">
-        <h2 className="text-semibold mb-20 text-xl text-white">
-          Please connect to the Goerli network
-        </h2>
-      </div>
+      <CollectionLayout>
+        <div className="flex h-full w-full  items-center justify-center">
+          <h2 className="text-semibold mb-20 text-xl text-white">
+            Please connect to the Goerli network
+          </h2>
+        </div>
+      </CollectionLayout>
     );
   }
 
   if (collection.length === 0) {
-    <div className="flex h-full w-full items-center justify-center">
-      <h2 className="text-semibold mb-20 text-xl text-white">
-        You don't have any AI PUNK NFT yet!
-      </h2>
-    </div>;
+    <CollectionLayout>
+      <div className="flex h-full w-full items-center justify-center">
+        <h2 className="text-semibold mb-20 text-xl text-white">
+          You don't have any AI PUNK NFT yet!
+        </h2>
+      </div>
+    </CollectionLayout>;
   }
 
   return (
-    <div className="mt-10 grid grid-cols-2 gap-4 px-6 md:gap-10 md:px-20 lg:grid-cols-5 xl:grid-cols-6">
-      {collection.map((uri, index) => (
-        <a
-          className="flex w-fit cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md bg-white p-1 md:p-4"
-          key={'uri' + index}
-          href={uri}
-          target="_blank"
-        >
-          <Image
-            src={uri}
-            width={200}
-            height={200}
-            alt="NFT"
-            className="rounded-lg"
-          />
-          <p className="w-full pt-3 pl-2 text-start text-lg font-semibold">
-            ID: {uri.split('/')[uri.split('/').length - 1].split('.')[0]}
-          </p>
-        </a>
-      ))}
-      {collection.length === 0 && (
-        <div className="fixed top-[50%] left-[50%] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
-          <h2 className='text-white text-semibold text-2xl md:text-4xl'>You don't have any AI Punk NFT yet!</h2>
-        </div>
-      )}
-    </div>
+    <CollectionLayout>
+      <div className="mt-10 grid grid-cols-2 gap-4 px-6 md:gap-10 md:px-20 lg:grid-cols-5 xl:grid-cols-6">
+        {collection.map((uri, index) => (
+          <a
+            className="flex w-fit cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md bg-white p-1 md:p-4"
+            key={'uri' + index}
+            href={uri}
+            target="_blank"
+          >
+            <Image
+              src={uri}
+              width={200}
+              height={200}
+              alt="NFT"
+              className="rounded-lg"
+            />
+            <p className="w-full pt-3 pl-2 text-start text-lg font-semibold">
+              ID: {uri.split('/')[uri.split('/').length - 1].split('.')[0]}
+            </p>
+          </a>
+        ))}
+        {collection.length === 0 && (
+          <div className="fixed top-[50%] left-[50%] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+            <h2 className="text-semibold text-2xl text-white md:text-4xl">
+              You don't have any AI Punk NFT yet!
+            </h2>
+          </div>
+        )}
+      </div>
+    </CollectionLayout>
   );
 }

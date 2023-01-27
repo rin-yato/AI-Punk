@@ -1,4 +1,3 @@
-'use client';
 import { BiLoaderAlt } from '@react-icons/all-files/bi/BiLoaderAlt';
 import React from 'react';
 

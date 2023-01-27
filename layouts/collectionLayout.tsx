@@ -2,7 +2,7 @@ import { IoMdArrowRoundBack } from '@react-icons/all-files/io/IoMdArrowRoundBack
 import Link from 'next/link';
 import React from 'react';
 
-export default function layout({ children }: { children: React.ReactNode }) {
+export default function CollectionLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen w-screen flex-col overflow-x-hidden">
       <div className="m-8 flex items-center gap-5 md:gap-8">
