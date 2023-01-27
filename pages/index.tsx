@@ -336,7 +336,10 @@ export default function page() {
   }
 
   async function mint() {
-    if (!window.ethereum) return;
+    if (!window.ethereum) {
+      alert('Please install MetaMask');
+      return;
+    };
     if (!account) {
       await connect();
     }

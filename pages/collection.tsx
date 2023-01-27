@@ -291,6 +291,10 @@ export default function CollectionPage() {
   const [wrongNetwork, setWrongNetwork] = useState(false);
 
   async function connect() {
+    if (!window.ethereum) {
+      alert('Please install MetaMask');
+      return;
+    }
     if (!account && window.ethereum.networkVersion !== '5') {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -333,40 +337,42 @@ export default function CollectionPage() {
   }
 
   useEffect(() => {
-    const account = window.localStorage.getItem('account');
-    if (account) {
-      connect();
-    }
+    if (window.ethereum) {
+      const account = window.localStorage.getItem('account');
+      if (account) {
+        connect();
+      }
 
-    window.ethereum.on('accountsChanged', (accounts: any) => {
-      if (accounts.length === 0) {
+      window.ethereum.on('accountsChanged', (accounts: any) => {
+        if (accounts.length === 0) {
+          setAccount('');
+          window.localStorage.removeItem('account');
+          return;
+        }
+        setAccount(accounts[0]);
+        window.localStorage.setItem('account', accounts[0]);
+      });
+
+      // window.ethereum on disconnect
+      window.ethereum.on('disconnect', () => {
         setAccount('');
         window.localStorage.removeItem('account');
-        return;
-      }
-      setAccount(accounts[0]);
-      window.localStorage.setItem('account', accounts[0]);
-    });
+      });
 
-    // window.ethereum on disconnect
-    window.ethereum.on('disconnect', () => {
-      setAccount('');
-      window.localStorage.removeItem('account');
-    });
-
-    window.ethereum.on('chainChanged', (chainId: string) => {
-      if (chainId !== '0x5') {
-        setWrongNetwork(true);
-        window.location.reload();
-      } else {
-        setWrongNetwork(false);
-        window.location.reload();
-      }
-    });
+      window.ethereum.on('chainChanged', (chainId: string) => {
+        if (chainId !== '0x5') {
+          setWrongNetwork(true);
+          window.location.reload();
+        } else {
+          setWrongNetwork(false);
+          window.location.reload();
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
-    if (account) {
+    if (account && window.ethereum) {
       getCollection().then((collection) => {
         setCollection(collection);
       });
