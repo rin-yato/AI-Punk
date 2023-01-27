@@ -329,12 +329,14 @@ export default function page() {
   }
 
   async function getCollection() {
+    if (!window.ethereum) return;
     const contract = await getContract();
     const collection = await contract.getCollection(account);
     return collection.map((item: BigNumber) => item.toNumber());
   }
 
   async function mint() {
+    if (!window.ethereum) return;
     if (!account) {
       await connect();
     }
@@ -363,36 +365,38 @@ export default function page() {
   }
 
   useEffect(() => {
-    const account = window.localStorage.getItem('account');
-    if (account) {
-      connect();
-    }
+    if (window.ethereum) {
+      const account = window.localStorage.getItem('account');
+      if (account) {
+        if (window.ethereum) connect();
+      }
 
-    window.ethereum.on('accountsChanged', (accounts: any) => {
-      if (accounts.length === 0) {
+      window.ethereum.on('accountsChanged', (accounts: any) => {
+        if (accounts.length === 0) {
+          setAccount('');
+          window.localStorage.removeItem('account');
+          return;
+        }
+        setAccount(accounts[0]);
+        window.localStorage.setItem('account', accounts[0]);
+      });
+
+      // window.ethereum on disconnect
+      window.ethereum.on('disconnect', () => {
         setAccount('');
         window.localStorage.removeItem('account');
-        return;
-      }
-      setAccount(accounts[0]);
-      window.localStorage.setItem('account', accounts[0]);
-    });
+      });
 
-    // window.ethereum on disconnect
-    window.ethereum.on('disconnect', () => {
-      setAccount('');
-      window.localStorage.removeItem('account');
-    });
-
-    window.ethereum.on('chainChanged', (chainId: string) => {
-      if (chainId !== '0x5') {
-        setWrongNetwork(true);
-        window.location.reload();
-      } else {
-        setWrongNetwork(false);
-        window.location.reload();
-      }
-    });
+      window.ethereum.on('chainChanged', (chainId: string) => {
+        if (chainId !== '0x5') {
+          setWrongNetwork(true);
+          window.location.reload();
+        } else {
+          setWrongNetwork(false);
+          window.location.reload();
+        }
+      });
+    }
   }, []);
 
   return (
