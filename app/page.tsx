@@ -301,14 +301,19 @@ export default function page() {
   const [wrongNetwork, setWrongNetwork] = useState(false);
 
   async function connect() {
+    if (!window.ethereum) {
+      alert('Please install MetaMask');
+      return;
+    }
+
     if (!account && window.ethereum.networkVersion !== '5') {
-      await window.ethereum.request({
+      window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x5' }],
       });
     }
     try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const address = await signer.getAddress();
